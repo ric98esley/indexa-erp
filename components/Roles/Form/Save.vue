@@ -131,6 +131,8 @@ const model = reactive({
 					delete: props.form.ability.assets?.delete ?? 'none',
 					import: props.form.ability.assets?.import ?? 'none',
 					export: props.form.ability.assets?.export ?? 'none',
+					checking: props.form.ability.assets?.checking ?? 'none',
+					checkout: props.form.ability.assets?.checkout ?? 'none',
 					recovery: props.form.ability.assets?.recovery ?? 'none'
 				},
 				models: {

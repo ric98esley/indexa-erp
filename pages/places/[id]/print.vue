@@ -31,36 +31,43 @@
         </el-row>
         <br /><br />
         <table class="w-full table-print">
-          <tr>
-            <th></th>
-            <th>Fecha</th>
-            <th>Serial</th>
-            <th>Descripción</th>
-          </tr>
-          <tr v-for="(assignment, index) in response.rows" v-bind:key="index" :class="assignment.current ? '' : 'is-not-current'">
-            <td>{{ index + 1 }}</td>
-            <td>{{ new Date(assignment?.createdAt).toLocaleString() }}</td>
-            <td>{{ assignment.asset?.serial }}</td>
-            <td>
-              {{ assignment.asset.model?.category.name || '' }} -
-              {{ assignment.asset.model?.brand.name || '' }} -
-              {{ assignment.asset.model?.name || '' }}
-            </td>
-          </tr>
-          <tr>
-            <th colspan="4">
-              <b>
-                Cantidad de activos asignados: {{ response.rows.length }}
-              </b>
-            </th>
-          </tr>
+          <thead>
+            <tr>
+              <th></th>
+              <th>Fecha</th>
+              <th>Serial</th>
+              <th>Descripción</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="(assignment, index) in response.rows" v-bind:key="index"
+              :class="assignment.current ? '' : 'is-not-current'">
+              <td>{{ index + 1 }}</td>
+              <td>{{ new Date(assignment?.createdAt).toLocaleString() }}</td>
+              <td>{{ assignment.asset?.serial }}</td>
+              <td>
+                {{ assignment.asset.model?.category.name || '' }} -
+                {{ assignment.asset.model?.brand.name || '' }} -
+                {{ assignment.asset.model?.name || '' }}
+              </td>
+            </tr>
+            <tr>
+              <th colspan="4">
+                <b>
+                  Cantidad de activos asignados: {{ response.rows.length }}
+                </b>
+              </th>
+            </tr>
+          </tbody>
         </table>
 
         <table class="w-full signs mt-10">
-          <tr class="mt-5">
-            <th>Firma del cliente</th>
-            <th>Firma del técnico</th>
-          </tr>
+          <tbody>
+            <tr class="mt-5">
+              <th>Firma del cliente</th>
+              <th>Firma del técnico</th>
+            </tr>
+          </tbody>
         </table>
         <div>
           <br /><br />
@@ -97,16 +104,10 @@ const user = auth.getUser;
 
 const response = reactive<{
   rows: Assignments[],
-  place: Place,
+  place?: Place,
   total?: number,
 }>({
-  place: {
-    isActive: false,
-    code: '',
-    phone: '',
-    rif: '',
-    address: ''
-  },
+  place: undefined,
   total: undefined,
   rows: []
 });
@@ -124,7 +125,7 @@ const setAssignments = async () => {
     startDate: route.query.startDate,
     endDate: route.query.endDate,
     all: route.query.all,
-    paranoid: route.query.paranoid,
+    paranoid: route.query.paranoid === 'true',
     current: route.query.current
   }
   const assets = await locationService.getLocationAssets(queries);
@@ -134,17 +135,20 @@ const setAssignments = async () => {
 }
 
 const setPlace = async () => {
-  const place = await locationService.getLocation({id: route.params.id});
+  const place = await locationService.getLocation({ id: Number(route.params.id) });
+  if (!place) {
+    return;
+  }
   response.place = place;
 }
 
 onMounted(async () => {
   await setAssignments()
   await setPlace()
-  .then(() => {
-    window.print();
-    setTimeout(window.close, 500);
-  });
+    .then(() => {
+      window.print();
+      setTimeout(window.close, 500);
+    });
 })
 </script>
 
@@ -203,6 +207,6 @@ onMounted(async () => {
 }
 
 .is-not-current {
-    text-decoration:line-through;
+  text-decoration: line-through;
 }
 </style>

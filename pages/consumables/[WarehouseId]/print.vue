@@ -15,47 +15,55 @@
         </el-row>
         <br /><br />
         <table class="w-full table-print">
-          <tr>
-            <th></th>
-            <th>Fecha</th>
-            <th>Código</th>
-            <th>Descripción</th>
-            <th>Cantidad</th>
-          </tr>
-          <tr v-for="(movement, index) in inventory.rows" v-bind:key="index">
-            <td>{{ index + 1 }}</td>
-            <td>{{ new Date(movement.createdAt!).toLocaleString() }}</td>
-            <td>{{ movement.product.code }}</td>
-            <td>
-              {{ movement.product.name || '' }} -
-              {{ movement.product.category?.name || '' }}
-            </td>
-            <td>
-              {{ movement.quantity || '' }} - {{ movement.product.unit }}
-            </td>
-          </tr>
-          <tr>
-            <th colspan="4">
-              <b>
-                Cantidad de insumos: {{ inventory.total }}
-              </b>
-            </th>
-          </tr>
+          <thead>
+            <tr>
+              <th></th>
+              <th>Fecha</th>
+              <th>Código</th>
+              <th>Descripción</th>
+              <th>Cantidad</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="(movement, index) in inventory.rows" v-bind:key="index">
+              <td>{{ index + 1 }}</td>
+              <td>{{ new Date(movement.createdAt!).toLocaleString() }}</td>
+              <td>{{ movement.product.code }}</td>
+              <td>
+                {{ movement.product.name || '' }} -
+                {{ movement.product.category?.name || '' }}
+              </td>
+              <td>
+                {{ movement.quantity || '' }} - {{ movement.product.unit }}
+              </td>
+            </tr>
+            <tr>
+              <th colspan="4">
+                <b>
+                  Cantidad de insumos: {{ inventory.total }}
+                </b>
+              </th>
+            </tr>
+          </tbody>
         </table>
 
         <table class="w-full table-print mt-10">
-          <tr class="mt-5">
-            <th><b>Nota:</b></th>
-          </tr>
-          <tr>
-            <th>Este reporte declara la cantidad de insumos en el sistema. Los cuales deben ser verificados por el responsable del lugar</th>
-          </tr>
+          <tbody>
+            <tr class="mt-5">
+              <th><b>Nota:</b></th>
+            </tr>
+            <tr>
+              <th>Este reporte declara la cantidad de insumos en el sistema. Los cuales deben ser verificados por el
+                responsable del lugar</th>
+            </tr>
+          </tbody>
         </table>
         <table class="w-full signs mt-10">
-
-          <tr class="mt-5">
-            <th>Firma del responsable: {{ user?.username }}</th>
-          </tr>
+          <tbody>
+            <tr class="mt-5">
+              <th>Firma del responsable: {{ user?.username }}</th>
+            </tr>
+          </tbody>
         </table>
       </el-col>
     </div>
@@ -156,7 +164,7 @@ const setInventory = async () => {
   }
 }
 
-const setData = async  () => {
+const setData = async () => {
   await setPlace(Number(route.params.WarehouseId));
   await setInventory();
 }

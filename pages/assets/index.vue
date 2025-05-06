@@ -115,6 +115,9 @@ definePageMeta({
   permissions: ['assets:read']
 })
 
+const route = useRoute();
+const router = useRouter();
+
 const AssetServices = useAssets();
 const assetServices = new AssetServices();
 
@@ -193,29 +196,26 @@ const response = reactive<{
 });
 
 const filters = reactive({
-  serial: '',
-  limit: 10,
-  offset: 1,
-  sort: 'createdAt',
-  order: 'DESC',
-  location: '',
-  type: '',
-  status: '',
-  group: '',
+  serial: route.query.serial?.toString() || '',
+  limit: Number(route.query.limit) || 10,
+  offset: Number(route.query.offset) || 1,
+  sort: route.query.sort?.toString() || 'createdAt',
+  order: route.query.order?.toString() || 'DESC',
+  location: route.query.location?.toString() || '',
+  type: route.query.type?.toString() || '',
+  status: route.query.status?.toString() || '',
+  group: route.query.group?.toString() || '',
   all: false,
-  model: '',
-  brand: '',
-  category: '',
-  endDate: '',
-  startDate: '',
+  model: route.query.model?.toString() || '',
+  brand: route.query.brand?.toString() || '',
+  category: route.query.category?.toString() || '',
+  endDate: route.query.endDate?.toString() || '',
+  startDate: route.query.startDate?.toString() || '',
 })
 
 const getAssets = async () => {
   try {
     loading.value = true;
-    if (filters.endDate < filters.startDate) {
-      throw new Error('La fecha de inicio no puede ser mayor a la fecha limite')
-    }
     const data = await assetServices.getAssets(filters);
 
     response.assets = data?.value?.rows || [];
@@ -258,6 +258,11 @@ const getExcel = async () => {
 }
 
 watch(filters, useDebounce(async () => {
+  router.push({
+    query: {
+      ...filters
+    }
+  })
   await getAssets()
 }, 500))
 

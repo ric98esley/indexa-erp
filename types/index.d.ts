@@ -255,6 +255,8 @@ declare global {
     alertType?: string;
     limit: number;
     offset: number;
+    startDate: string;
+    endDate: string;
     ip?: string;
     limit?: number;
     offset?: number;

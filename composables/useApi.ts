@@ -12,16 +12,18 @@ export async function useApi<T>(
     headers: authStore.getToken
       ? { Authorization: `Bearer ${authStore.getToken}` }
       : {},
-    onResponse: async ({ response, options }) => {
+    onResponse: async ({ response, options: options2 }) => {
       if (response.status === 401) {
         try {
           const data = await useRefreshToken();
 
-
           authStore.setAuthState(data)
 
-          options.headers = { Authorization: `Bearer ${authStore.getToken}` };
-          useFetch(url, options as UseFetchOptions<T>);
+          options2.headers = { Authorization: `Bearer ${authStore.getToken}` };
+
+          const params = defu(options2, options);
+
+          useFetch(url, params as UseFetchOptions<T>);
         } catch (error: any) {
           const { $errorHandler } = useNuxtApp();
           if( error.statusCode === 401) {

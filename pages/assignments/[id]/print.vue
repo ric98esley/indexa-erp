@@ -10,8 +10,8 @@
             <br />
             {{
               order.type == "checkout"
-              ? "Reporte de salida"
-              : "Reporte de entrada"
+                ? "Reporte de salida"
+                : "Reporte de entrada"
             }}
             <br />
             Realizado por:
@@ -40,48 +40,57 @@
         </el-row>
         <br /><br />
         <table class="w-full table-print">
-          <tr>
-            <th></th>
-            <th>Fecha</th>
-            <th>Serial</th>
-            <th>Descripción</th>
-            <template v-if="order.type == 'checking'">
-              <th>Lugar</th>
-            </template>
-          </tr>
-          <tr v-for="(assignment, index) in assignments" v-bind:key="index" :class="assignment.current ? '' : 'is-not-current'">
-            <td>{{ index + 1 }}</td>
-            <td>{{ new Date(assignment.createdAt).toLocaleString() }}</td>
-            <td>{{ assignment.asset?.serial }}</td>
-            <td>
-              {{ assignment.asset.model?.category.name || '' }} -
-              {{ assignment.asset.model?.brand.name || '' }} -
-              {{ assignment.asset.model?.name || '' }}
-            </td>
-            <td v-if="order.type == 'checking'">
-              <template v-if="assignment.from">
-                <b>
-                  {{ assignment.from?.code }}
-                </b> -
-                {{ assignment.from?.name }}
+          <thead>
+
+            <tr>
+              <th></th>
+              <th>Fecha</th>
+              <th>Serial</th>
+              <th>Descripción</th>
+              <template v-if="order.type == 'checking'">
+                <th>Lugar</th>
               </template>
-            </td>
-          </tr>
-          <tr>
-            <th colspan="4" class="text-center">
-              <b>
-                Cantidad de activos asignados: {{ assignments.length }}
-              </b>
-            </th>
-          </tr>
+            </tr>
+          </thead>
+          <tbody>
+
+            <tr v-for="(assignment, index) in assignments" v-bind:key="index"
+              :class="assignment.current ? '' : 'is-not-current'">
+              <td>{{ index + 1 }}</td>
+              <td>{{ new Date(assignment.createdAt).toLocaleString() }}</td>
+              <td>{{ assignment.asset?.serial }}</td>
+              <td>
+                {{ assignment.asset.model?.category.name || '' }} -
+                {{ assignment.asset.model?.brand.name || '' }} -
+                {{ assignment.asset.model?.name || '' }}
+              </td>
+              <td v-if="order.type == 'checking'">
+                <template v-if="assignment.from">
+                  <b>
+                    {{ assignment.from?.code }}
+                  </b> -
+                  {{ assignment.from?.name }}
+                </template>
+              </td>
+            </tr>
+            <tr>
+              <th colspan="4" class="text-center">
+                <b>
+                  Cantidad de activos asignados: {{ assignments.length }}
+                </b>
+              </th>
+            </tr>
+          </tbody>
         </table>
 
         <table class="w-full signs mt-20">
-          <tr>
-            <th v-if="order.type == 'checking'">Recibido por:</th>
-            <th v-else>Firma del cliente</th>
-            <th>Firma del técnico</th>
-          </tr>
+          <tbody>
+            <tr>
+              <th v-if="order.type == 'checking'">Recibido por:</th>
+              <th v-else>Firma del cliente</th>
+              <th>Firma del técnico</th>
+            </tr>
+          </tbody>
         </table>
         <div v-if="order.content">
           <br /><br />
@@ -162,7 +171,7 @@ onMounted(async () => {
   await getOrder().then(async () => {
     await getMovements()
   }).then(() => {
-    setTimeout(()=> {
+    setTimeout(() => {
       window.print();
       setTimeout(window.close, 500);
     }, 1000);
@@ -227,6 +236,6 @@ onMounted(async () => {
 }
 
 .is-not-current {
-    text-decoration:line-through;
+  text-decoration: line-through;
 }
 </style>

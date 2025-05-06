@@ -122,9 +122,6 @@ const print = () => {
 
 const setAssignments = async () => {
   try {
-    if (filters.endDate < filters.startDate) {
-      throw new Error('La fecha de inicio no puede ser mayor a la fecha limite')
-    }
     loadingAssignments.value = true;
 
     const orderType = props.orderType;

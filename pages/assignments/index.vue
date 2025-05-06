@@ -170,54 +170,6 @@ const shortcuts = [
   }
 ]
 
-const sortBy = [
-  {
-    label: 'Fecha',
-    value: 'createdAt'
-  },
-  {
-    label: 'Código',
-    value: 'location.code'
-  },
-  {
-    label: 'Serial',
-    value: 'asset.serial'
-  },
-  {
-    label: 'Categoría',
-    value: 'asset.model.category.name'
-  },
-  {
-    label: 'Modelo',
-    value: 'asset.model.name'
-  },
-  {
-    label: 'Marca',
-    value: 'asset.model.brand.name'
-  },
-  {
-    label: 'Grupo',
-    value: 'to.group.code'
-  },
-  {
-    label: 'Lugar',
-    value: 'to.code'
-  },
-  {
-    label: 'Tipo de movimiento',
-    value: 'movementType'
-  },
-  {
-    label: 'Tipo de orden',
-    value: 'orderType'
-  },
-  {
-    label: 'Estado',
-    value: 'asset.status'
-  },
-
-]
-
 const sortType = [
   {
     label: 'Ascendente',
@@ -326,9 +278,6 @@ const setMovementsByLocation = async () => {
 
 const setAssignments = async () => {
   try {
-    if (filters.endDate < filters.startDate) {
-      throw new Error('La fecha de inicio no puede ser mayor a la fecha limite')
-    }
     loadingAssignments.value = true;
 
     const orderType = route.query.type?.toString() || '';

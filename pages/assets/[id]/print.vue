@@ -12,8 +12,8 @@
             <br />
             {{
               order.type == "checkout"
-              ? "Reporte de salida"
-              : "Reporte de entrada"
+                ? "Reporte de salida"
+                : "Reporte de entrada"
             }}
             <br />
             Fecha de impresión: {{ new Date().toLocaleString() }} <br />
@@ -51,59 +51,67 @@
         </el-row>
         <br /><br />
         <table class="w-full table-print">
-          <tr>
-            <th></th>
-            <th>Fecha</th>
-            <th>Serial</th>
-            <th>Descripción</th>
-            <template v-if="order.type == 'checking'">
-              <th>Lugar</th>
-            </template>
-          </tr>
-          <tr v-for="(assignment, index) in order.assignments" v-bind:key="index">
-            <td>{{ index + 1 }}</td>
-            <td>{{ new Date(assignment.checkoutAt).toLocaleString() }}</td>
-            <td>{{ assignment.target?.serial }}</td>
-            <td>
-              {{ assignment.target.model?.category.name || '' }} -
-              {{ assignment.target.model?.brand.name || '' }} -
-              {{ assignment.target.model?.name || '' }}
-            </td>
-            <td v-if="order.type == 'checking'">
-              <template v-if="assignment.user">
-                <b>
-                  {{ assignment.user?.username }}
-                </b> -
-                {{ assignment.user?.name }} {{ assignment.user?.lastName }}
+          <thead>
+
+            <tr>
+              <th></th>
+              <th>Fecha</th>
+              <th>Serial</th>
+              <th>Descripción</th>
+              <template v-if="order.type == 'checking'">
+                <th>Lugar</th>
               </template>
-              <template v-if="assignment.location">
+            </tr>
+          </thead>
+          <tbody>
+
+            <tr v-for="(assignment, index) in order.assignments" v-bind:key="index">
+              <td>{{ index + 1 }}</td>
+              <td>{{ new Date(assignment.checkoutAt).toLocaleString() }}</td>
+              <td>{{ assignment.target?.serial }}</td>
+              <td>
+                {{ assignment.target.model?.category.name || '' }} -
+                {{ assignment.target.model?.brand.name || '' }} -
+                {{ assignment.target.model?.name || '' }}
+              </td>
+              <td v-if="order.type == 'checking'">
+                <template v-if="assignment.user">
+                  <b>
+                    {{ assignment.user?.username }}
+                  </b> -
+                  {{ assignment.user?.name }} {{ assignment.user?.lastName }}
+                </template>
+                <template v-if="assignment.location">
+                  <b>
+                    {{ assignment.location?.code }}
+                  </b> -
+                  {{ assignment.location?.name }}
+                </template>
+                <template v-if="assignment.asset">
+                  <b>
+                    Serial:
+                  </b>
+                  {{ assignment.asset?.serial }}
+                </template>
+              </td>
+            </tr>
+            <tr>
+              <th colspan="4">
                 <b>
-                  {{ assignment.location?.code }}
-                </b> -
-                {{ assignment.location?.name }}
-              </template>
-              <template v-if="assignment.asset">
-                <b>
-                  Serial:
+                  Cantidad de activos asignados: {{ order.assignments.length }}
                 </b>
-                {{ assignment.asset?.serial }}
-              </template>
-            </td>
-          </tr>
-          <tr>
-            <th colspan="4">
-              <b>
-                Cantidad de activos asignados: {{ order.assignments.length }}
-              </b>
-            </th>
-          </tr>
+              </th>
+            </tr>
+          </tbody>
         </table>
 
         <table class="w-full signs mt-5">
-          <tr class="mt-5">
-            <th>Firma del cliente</th>
-            <th>Firma del técnico</th>
-          </tr>
+          <tbody>
+            <tr class="mt-5">
+              <th>Firma del cliente</th>
+              <th>Firma del técnico</th>
+            </tr>
+          </tbody>
         </table>
         <div>
           <br /><br />

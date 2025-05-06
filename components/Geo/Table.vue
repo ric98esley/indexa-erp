@@ -12,12 +12,54 @@ const props = defineProps({
 
 const emit = defineEmits(['filters'])
 
+const shortcuts = [
+  {
+    text: 'Hoy',
+    value: new Date(),
+  },
+  {
+    text: 'Ayer',
+    value: () => {
+      const date = new Date()
+      date.setTime(date.getTime() - 3600 * 1000 * 24)
+      return date
+    },
+  },
+  {
+    text: 'Semana pasada',
+    value: () => {
+      const date = new Date()
+      date.setTime(date.getTime() - 3600 * 1000 * 24 * 7)
+      return date
+    },
+  },
+  {
+    text: 'Mes pasado',
+    value: () => {
+      const date = new Date()
+      date.setTime(date.getTime() - 3600 * 1000 * 24 * 30)
+      return date
+    },
+  },
+  {
+    text: 'Trimestre pasado',
+    value: () => {
+      const date = new Date()
+      date.setTime(date.getTime() - 3600 * 1000 * 24 * 90)
+      return date
+    },
+  }
+]
+
 const filters = reactive({
   limit: 10,
   offset: 1,
   ip: '',
   serial: '',
   alertType: '',
+  location: '',
+  startDate: '',
+  endDate: '',
 })
 
 const geoClass = ({
@@ -42,10 +84,32 @@ watch(filters, () => {
 <template>
   <el-container>
     <el-col>
+      <el-row>
+        <el-form>
+          <el-row>
+            <el-form-item class="w-64 sm:w-auto ml-4">
+              <el-date-picker v-model="filters.startDate" type="datetime" placeholder="Fecha de inicio"
+                format="YYYY/MM/DD" value-format="x" :shortcuts="shortcuts" />
+            </el-form-item>
+            <div class="ml-4 w-10 flex items-center sm:items-start sm:mt-1">
+              <span class="ml-2">al</span>
+            </div>
+            <el-form-item class="w-64 sm:w-auto ml-4 sm:ml-0 sm:mr-4">
+              <el-date-picker v-model="filters.endDate" type="datetime" placeholder="Fecha limite" format="YYYY/MM/DD"
+                value-format="x" />
+            </el-form-item>
+          </el-row>
+        </el-form>
+      </el-row>
       <el-table :data="props.data" :row-class-name="geoClass">
         <el-table-column prop="serial" label="Serial">
           <template #header>
             <el-input v-model="filters.serial" placeholder="Serial" clearable />
+          </template>
+          <template #default="{ row }">
+            <span class="text-teal-500 underline">
+              <NuxtLink :to="`/assets?serial=${row.serial}`" target="_blank">{{ row.serial }}</NuxtLink>
+            </span>
           </template>
         </el-table-column>
         <el-table-column prop="ip" label="IP">
@@ -64,6 +128,9 @@ watch(filters, () => {
           </template>
         </el-table-column>
         <el-table-column prop="location.code" label="Lugar">
+          <template #header>
+            <el-input v-model="filters.location" placeholder="Lugar" clearable />
+          </template>
           <template #default="{ row }">
             {{ row.location?.code ?? 'Activo no encontrado' }} - {{ row.location?.name }}
           </template>

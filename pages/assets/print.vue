@@ -14,38 +14,42 @@
         </el-row>
         <br /><br />
         <table class="w-full table-print">
-          <tr>
-            <th></th>
-            <th>Fecha</th>
-            <th>Serial</th>
-            <th>Descripción</th>
-            <th>Lugar</th>
-          </tr>
-          <tr v-for="(asset, index) in response.rows" v-bind:key="index">
-            <td>{{ index + 1 }}</td>
-            <td>{{ asset.createdAt && new Date(asset?.createdAt).toLocaleString() }}</td>
-            <td>{{ asset?.serial }}</td>
-            <td>
-              {{ asset.model?.category.name || '' }} -
-              {{ asset.model?.brand.name || '' }} -
-              {{ asset.model?.name || '' }}
-            </td>
-            <td>
-              <template v-if="asset.location">
+          <thead>
+            <tr>
+              <th></th>
+              <th>Fecha</th>
+              <th>Serial</th>
+              <th>Descripción</th>
+              <th>Lugar</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="(asset, index) in response.rows" v-bind:key="index">
+              <td>{{ index + 1 }}</td>
+              <td>{{ asset.createdAt && new Date(asset?.createdAt).toLocaleString() }}</td>
+              <td>{{ asset?.serial }}</td>
+              <td>
+                {{ asset.model?.category.name || '' }} -
+                {{ asset.model?.brand.name || '' }} -
+                {{ asset.model?.name || '' }}
+              </td>
+              <td>
+                <template v-if="asset.location">
+                  <b>
+                    {{ asset.location?.code }}
+                  </b> -
+                  {{ asset.location?.name }}
+                </template>
+              </td>
+            </tr>
+            <tr>
+              <th colspan="4">
                 <b>
-                  {{ asset.location?.code }}
-                </b> -
-                {{ asset.location?.name }}
-              </template>
-            </td>
-          </tr>
-          <tr>
-            <th colspan="4">
-              <b>
-                Cantidad de activos: {{ response.rows.length }}
-              </b>
-            </th>
-          </tr>
+                  Cantidad de activos: {{ response.rows.length }}
+                </b>
+              </th>
+            </tr>
+          </tbody>
         </table>
       </el-col>
     </div>
@@ -81,20 +85,20 @@ const response = reactive<{
 });
 
 const setAssets = async () => {
-    console.log(route.query)
-    const data = await assetServices.getAssets({ offset: 0, ...route.query, limit: Number(route.query.total)});
-    response.rows = data?.value?.rows || [];
-    response.total = data?.value?.total || 0;
+  console.log(route.query)
+  const data = await assetServices.getAssets({ offset: 0, ...route.query, limit: Number(route.query.total) });
+  response.rows = data?.value?.rows || [];
+  response.total = data?.value?.total || 0;
 }
 
 
 
 onMounted(async () => {
   setAssets()
-  .then(() => {
-    window.print();
-    setTimeout(window.close, 500);
-  });
+    .then(() => {
+      window.print();
+      setTimeout(window.close, 500);
+    });
 })
 </script>
 
@@ -153,6 +157,6 @@ onMounted(async () => {
 }
 
 .is-not-current {
-    text-decoration:line-through;
+  text-decoration: line-through;
 }
 </style>
